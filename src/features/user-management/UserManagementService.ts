@@ -2,9 +2,9 @@ import { sql } from "../__common__/db-utils.ts";
 import { Result } from "../__common__/fun.ts";
 import { transformUnkToErr } from "../__common__/utils.ts";
 import { connectToUserDb } from "./UserManagementDatabase.ts";
-import { BulkUsersGetter, NewUser, User, UserCreator } from "./UserManagementDomain.ts";
+import { NewUser, User } from "./UserManagementDomain.ts";
 
-export const UserService: UserService = {
+export const UserService = {
   getUsers,
   createUser
 }
@@ -124,8 +124,3 @@ function getIdentity(newUser: NewUser) {
     credential: id.credential
   };
 }
-
-type UserService = {
-  getUsers: BulkUsersGetter,
-  createUser: UserCreator
-};

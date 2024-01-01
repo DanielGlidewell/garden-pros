@@ -1,5 +1,3 @@
-import { Result } from "../__common__/fun.ts"
-
 // ------------------
 // | External Types |
 // ------------------
@@ -9,6 +7,48 @@ export type User = {
   id: number
   personalInfo: PersonalInfo
   roles: SystemRole[]
+}
+
+export function isUser(val: any): val is User {
+  const errors: string[] = []
+
+  if (typeof val != 'object') {
+    errors.push('Not an object')
+  }
+
+  if (val.id == undefined) {
+    errors.push('Missing id')
+  }
+
+  if (typeof val.id != 'number') {
+    errors.push('Invalid id')
+  }
+
+  if (val.personalInfo == undefined) {
+    errors.push('Missing personalInfo')
+  }
+
+  if (!isPersonalInfo(val.personalInfo)) {
+    errors.push('Invalid personalInfo')
+  }
+
+  if (val.roles == undefined) {
+    errors.push('Missing roles')
+  }
+
+  if (!Array.isArray(val.roles)) {
+    errors.push('Invalid roles')
+  }
+
+  if (!val.roles.every(isSystemRole)) {
+    errors.push('Invalid roles')
+  }
+
+  if (errors.length > 0) {
+    console.log(errors)
+    return false
+  }
+  return true
 }
 
 export type NewUser = {
@@ -68,47 +108,6 @@ export function isNewUser(value: any): value is NewUser {
   return true
 }
 
-export function isUser(val: any): val is User {
-  const errors: string[] = []
-
-  if (typeof val != 'object') {
-    errors.push('Not an object')
-  }
-
-  if (val.id == undefined) {
-    errors.push('Missing id')
-  }
-
-  if (typeof val.id != 'number') {
-    errors.push('Invalid id')
-  }
-
-  if (val.personalInfo == undefined) {
-    errors.push('Missing personalInfo')
-  }
-
-  if (!isPersonalInfo(val.personalInfo)) {
-    errors.push('Invalid personalInfo')
-  }
-
-  if (val.roles == undefined) {
-    errors.push('Missing roles')
-  }
-
-  if (!Array.isArray(val.roles)) {
-    errors.push('Invalid roles')
-  }
-
-  if (!val.roles.every(isSystemRole)) {
-    errors.push('Invalid roles')
-  }
-
-  if (errors.length > 0) {
-    console.log(errors)
-    return false
-  }
-  return true
-}
 
 // -- Personal Info --
 export type PersonalInfo = {
@@ -162,11 +161,6 @@ function isPersonalInfo(value: any): value is PersonalInfo {
   return true
 }
 
-// -- Function Types --
-export type BulkUsersGetter = () => Result<User[]>
-
-export type UserCreator = (newUser: NewUser) => Result<User>
-
 
 
 // ------------------
@@ -179,7 +173,6 @@ type UserIdentification = {
   identifier: string
   credential: string
 }
-
 
 const IdentityTypes = ['password', 'facebook', 'google'] as const
 
