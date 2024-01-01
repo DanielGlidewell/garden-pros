@@ -14,11 +14,7 @@ export type User = {
 export type NewUser = {
   personalInfo: PersonalInfo
   roles: SystemRole[]
-  identification: {
-    type: IdentityType
-    identifier: string
-    credential: string
-  }
+  identification: UserIdentification
 }
 
 // deno-lint-ignore no-explicit-any
@@ -72,20 +68,50 @@ export function isNewUser(value: any): value is NewUser {
   return true
 }
 
+export function isUser(val: any): val is User {
+  const errors: string[] = []
 
-// -- Function Types --
-export type BulkUsersGetter = () => Promise<Result<User[]>>
+  if (typeof val != 'object') {
+    errors.push('Not an object')
+  }
 
-export type UserCreator = (newUser: NewUser) => Promise<Result<User>>
+  if (val.id == undefined) {
+    errors.push('Missing id')
+  }
 
+  if (typeof val.id != 'number') {
+    errors.push('Invalid id')
+  }
 
+  if (val.personalInfo == undefined) {
+    errors.push('Missing personalInfo')
+  }
 
-// ------------------
-// | Internal Types |
-// ------------------
+  if (!isPersonalInfo(val.personalInfo)) {
+    errors.push('Invalid personalInfo')
+  }
+
+  if (val.roles == undefined) {
+    errors.push('Missing roles')
+  }
+
+  if (!Array.isArray(val.roles)) {
+    errors.push('Invalid roles')
+  }
+
+  if (!val.roles.every(isSystemRole)) {
+    errors.push('Invalid roles')
+  }
+
+  if (errors.length > 0) {
+    console.log(errors)
+    return false
+  }
+  return true
+}
 
 // -- Personal Info --
-type PersonalInfo = {
+export type PersonalInfo = {
   firstName: string
   middleName: string | null
   lastName: string
@@ -136,8 +162,25 @@ function isPersonalInfo(value: any): value is PersonalInfo {
   return true
 }
 
+// -- Function Types --
+export type BulkUsersGetter = () => Result<User[]>
+
+export type UserCreator = (newUser: NewUser) => Result<User>
+
+
+
+// ------------------
+// | Internal Types |
+// ------------------
 
 // -- Identity Types --
+type UserIdentification = {
+  type: IdentityType
+  identifier: string
+  credential: string
+}
+
+
 const IdentityTypes = ['password', 'facebook', 'google'] as const
 
 type IdentityType = typeof IdentityTypes[number]

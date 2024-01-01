@@ -38,7 +38,7 @@ export function sql(
   sourceParts.forEach((string, i) => {
     text += string;
     if (i < substitutions.length) {
-      parameters.push(substitutions[i]);
+      parameters.push(substitutions[i] ?? null);
       text += '?';
     }
   });
