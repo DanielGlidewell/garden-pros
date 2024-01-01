@@ -9,6 +9,7 @@ export type User = {
   roles: SystemRole[]
 }
 
+// deno-lint-ignore no-explicit-any
 export function isUser(val: any): val is User {
   const errors: string[] = []
 

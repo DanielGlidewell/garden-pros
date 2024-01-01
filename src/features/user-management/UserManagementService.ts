@@ -29,6 +29,7 @@ function getUsers(): Result<User[]> {
 
   try {
     const result = db.prepare(getUsersQuery.sql).all(getUsersQuery.parameters);
+    // deno-lint-ignore no-explicit-any
     const users = result.map(function resultToUser(row: any) {
       return {
         id: row.id,

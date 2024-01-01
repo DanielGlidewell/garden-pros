@@ -41,6 +41,7 @@ export const userManagementRouter = new Router()
 async function buildNewUserFromBodyForm(bodyForm: BodyForm): Promise<NewUser> {
   const params = await bodyForm.value
   const flatData = Object.fromEntries(params.entries())
+  // deno-lint-ignore no-explicit-any
   const result: Record<string, any> = {};
 
   for (const [path, value] of Object.entries(flatData)) {
