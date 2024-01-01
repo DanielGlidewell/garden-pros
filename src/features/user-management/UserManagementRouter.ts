@@ -30,7 +30,7 @@ export const userManagementRouter = new Router()
         throw new Error('Something has gone terribly wrong.')
       }
 
-      context.response.body = `User created: ${JSON.stringify(result.value)}`
+      context.response.redirect('/users')
     } catch (e) {
       console.error(e)
       context.response.body = 'Something went wrong: ' + e.message
